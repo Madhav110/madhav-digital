@@ -16,7 +16,7 @@ COPY app.js /pb/pb_public/app.js
 COPY app.css /pb/pb_public/app.css
 
 COPY pb_migrations /pb/pb_migrations
-COPY COPY pb_migpb_hooks /pb/pb_hooks
+COPY pb_migpb_hooks /pb/pb_hooks
 
 EXPOSE 8080
 
