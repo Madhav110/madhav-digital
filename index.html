@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Madhav Digital — Stock & Billing</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div id="loginScreen" class="center">
+    <div class="card login">
+      <h1>Madhav Digital</h1>
+      <p class="muted">Stock & Billing Software</p>
+      <form id="loginForm">
+        <label>Email<input id="loginEmail" type="email" required></label>
+        <label>Password<input id="loginPassword" type="password" required></label>
+        <button class="primary" type="submit">Login</button>
+        <div id="loginMsg" class="msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <header>
+      <div>
+        <h1>Madhav Digital</h1>
+        <div class="muted">Stock & Billing</div>
+      </div>
+      <button id="logoutBtn" class="ghost">Logout</button>
+    </header>
+
+    <nav class="tabs">
+      <button data-tab="dashboard" class="tab active">Dashboard</button>
+      <button data-tab="products" class="tab">Products</button>
+      <button data-tab="billing" class="tab">New Bill</button>
+      <button data-tab="sales" class="tab">Sales Report</button>
+    </nav>
+
+    <main>
+      <section id="dashboard" class="panel">
+        <div class="grid4">
+          <div class="stat"><span>Products</span><b id="statProducts">0</b></div>
+          <div class="stat"><span>Stock Qty</span><b id="statStock">0</b></div>
+          <div class="stat"><span>Total Sales</span><b id="statSales">₹0</b></div>
+          <div class="stat"><span>Due</span><b id="statDue">₹0</b></div>
+        </div>
+        <div class="card">
+          <h2>Quick Start</h2>
+          <ol>
+            <li>Products में item और stock डालें.</li>
+            <li>New Bill में product चुनकर quantity डालें.</li>
+            <li>Save Bill करने पर stock server-side transaction में घटेगा.</li>
+            <li>WhatsApp button से customer को bill भेजें.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="products" class="panel hidden">
+        <div class="card">
+          <h2>Add / Edit Product</h2>
+          <form id="productForm" class="formgrid">
+            <input id="productId" type="hidden">
+            <label>Product Name<input id="pName" required></label>
+            <label>Product Code<input id="pCode" required></label>
+            <label>Supplier<input id="pSupplier"></label>
+            <label>Purchase Price<input id="pPurchase" type="number" min="0" step="0.01"></label>
+            <label>Selling Price<input id="pSelling" type="number" min="0" step="0.01"></label>
+            <label>Stock Qty<input id="pStock" type="number" min="0" step="1" required></label>
+            <label>Product Photo<input id="pPhoto" type="file" accept="image/*"></label>
+            <label class="wide">Remarks<textarea id="pRemarks"></textarea></label>
+            <div class="actions wide">
+              <button class="primary" type="submit">Save Product</button>
+              <button type="button" id="productCancel">Clear</button>
+            </div>
+            <div id="productMsg" class="msg wide"></div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="row between">
+            <h2>Product List</h2>
+            <input id="productSearch" class="search" placeholder="Search product/code">
+          </div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Photo</th><th>Product</th><th>Code</th><th>Supplier</th><th>Purchase</th><th>Selling</th><th>Stock</th><th>Action</th></tr></thead>
+              <tbody id="productRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="billing" class="panel hidden">
+        <div class="card">
+          <h2>New Bill</h2>
+          <div class="formgrid">
+            <label>Customer Name<input id="customerName"></label>
+            <label>Mobile<input id="customerMobile" inputmode="tel"></label>
+            <label>Bill Date<input id="billDate" type="date"></label>
+            <label>Discount<input id="billDiscount" type="number" min="0" step="0.01" value="0"></label>
+            <label>Paid Amount<input id="billPaid" type="number" min="0" step="0.01" value="0"></label>
+            <label class="wide">Remarks<textarea id="billRemarks"></textarea></label>
+          </div>
+
+          <div class="billadd">
+            <select id="billProduct"></select>
+            <input id="billQty" type="number" min="1" step="1" value="1">
+            <input id="billRate" type="number" min="0" step="0.01" placeholder="Rate">
+            <button id="addItem" class="primary">Add</button>
+          </div>
+
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead>
+              <tbody id="billRows"></tbody>
+            </table>
+          </div>
+
+          <div class="totals">
+            <div>Subtotal: <b id="billSubtotal">₹0</b></div>
+            <div>Discount: <b id="billDiscountView">₹0</b></div>
+            <div>Total: <b id="billTotal">₹0</b></div>
+            <div>Paid: <b id="billPaidView">₹0</b></div>
+            <div>Due: <b id="billDue">₹0</b></div>
+          </div>
+
+          <div class="actions">
+            <button id="saveBill" class="primary">Save Bill</button>
+            <button id="clearBill">Clear</button>
+          </div>
+          <div id="billMsg" class="msg"></div>
+        </div>
+      </section>
+
+      <section id="sales" class="panel hidden">
+        <div class="card">
+          <div class="row between">
+            <h2>Sales Report</h2>
+            <button id="refreshSales">Refresh</button>
+          </div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Bill No</th><th>Date</th><th>Customer</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="salesRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
